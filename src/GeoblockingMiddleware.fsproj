@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <PackageId>GeoblockingMiddleware</PackageId>
+    <RepositoryUrl>https://github.com/edgarfgp/GeoblockingMiddleware</RepositoryUrl>
+    <PackageTags>owin, geoblocking, location, country, countrycode, geoblock, stop, geographical, block by country, aspnetcore, webserver, kestrel, request, ip, middleware, pipeline, dotnet</PackageTags>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsPackable>true</IsPackable>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IsTestProject>false</IsTestProject>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <Description>
+        This component will act as middleware for OWIN or AspNetCore pipeline and check the request geolocation if the request comes from allowed country or not.
+    </Description>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DefineConstants Condition=" '$(TargetFramework)' != 'net472' ">ASPNETCORE</DefineConstants>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Include="Geoblocking.Common.fs" />
+    <Compile Include="GeoblockingOwin.fs" Condition=" '$(TargetFramework)' == 'net472' " />
+    <Compile Include="GeoblockingCore.fs" Condition=" '$(TargetFramework)' != 'net472' " />
+  </ItemGroup>
+  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net472' ">
+    <PackageReference Include="Microsoft.Owin" Version="4.2.2" />
+    <PackageReference Include="Owin" Version="1.0.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+  
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net472' ">
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+</Project>
