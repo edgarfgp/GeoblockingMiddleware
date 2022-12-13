@@ -6,6 +6,9 @@
     <RepositoryUrl>https://github.com/edgarfgp/GeoblockingMiddleware</RepositoryUrl>
     <PackageTags>owin, geoblocking, location, country, countrycode, geoblock, stop, geographical, block by country, aspnetcore, webserver, kestrel, request, ip, middleware, pipeline, dotnet</PackageTags>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	<Version>1.0.0</Version>
+	<Authors>Edgar, Timothé, Tuomas</Authors>
+	<OutputPath>..\bin\</OutputPath>
     <RepositoryType>git</RepositoryType>
     <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
