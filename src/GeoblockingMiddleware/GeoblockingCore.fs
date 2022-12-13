@@ -1,4 +1,4 @@
-﻿namespace Geoblocking.Core
+﻿namespace GeoblockingMiddleware
 
 open System
 open System.Net
@@ -7,7 +7,7 @@ open Microsoft.AspNetCore.Http
 type GeoblockingMiddleware(next: RequestDelegate) =
 
     /// GeoBlocking configuration that can be overriden
-    let mutable Config = Geoblocking.Common.defaultConfig
+    let mutable Config = Common.defaultConfig
 
     member this.Invoke(context: HttpContext) =
 
@@ -17,15 +17,21 @@ type GeoblockingMiddleware(next: RequestDelegate) =
                 do! context.Response.WriteAsync("Geo location not allowed")
             }
 
-        let acceptRequest (next: RequestDelegate, context: HttpContext) =
-            next.Invoke(context)
+        let acceptRequest (next: RequestDelegate, context: HttpContext) = next.Invoke(context)
 
         task {
             let ipAddress = context.Request.HttpContext.Connection.RemoteIpAddress.ToString()
-            let path = if context.Request.Path.HasValue then context.Request.Path.Value else ""
-            let! isBlocked = Geoblocking.Common.shouldBlock Config ipAddress path
+
+            let path =
+                if context.Request.Path.HasValue then
+                    context.Request.Path.Value
+                else
+                    ""
+
+            let! isBlocked = Common.shouldBlock Config ipAddress path
+
             if isBlocked then
                 do! denyRequest context
-            else 
-                do! acceptRequest(next, context)
+            else
+                do! acceptRequest (next, context)
         }
