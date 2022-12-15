@@ -8,7 +8,7 @@ type GeoblockingMiddleware(next: RequestDelegate) =
 
     /// GeoBlocking configuration that can be overriden
     let mutable Config = Common.defaultConfig
-
+    
     member this.Invoke(context: HttpContext) =
 
         let denyRequest (context: HttpContext) =
@@ -35,3 +35,6 @@ type GeoblockingMiddleware(next: RequestDelegate) =
             else
                 do! acceptRequest (next, context)
         }
+
+    member this.InitCacheCleaning() =
+        Common.setupCacheCleanup Config

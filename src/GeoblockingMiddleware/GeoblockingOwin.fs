@@ -18,7 +18,7 @@ type GeoblockingMiddleware(next: OwinMiddleware) =
         }
 
     let acceptRequest (next: OwinMiddleware, context: IOwinContext) = next.Invoke(context)
-
+    
     override this.Invoke(context: IOwinContext) =
 
         task {
@@ -33,6 +33,10 @@ type GeoblockingMiddleware(next: OwinMiddleware) =
                 do! acceptRequest (next, context)
         }
 
+    member this.InitCacheCleaning() =
+        Common.setupCacheCleanup Config
+
+
 open System.Runtime.CompilerServices
 open Owin
 
@@ -41,6 +45,8 @@ type GeoblockingExtensions =
 
     [<Extension>]
     static member UseGeoblocking(app: IAppBuilder, settings: GeoConfig) =
+        Common.setupCacheCleanup settings
+
         app.Use(fun context next ->
 
             task {
