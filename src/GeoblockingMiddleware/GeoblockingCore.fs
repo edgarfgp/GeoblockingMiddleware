@@ -4,20 +4,23 @@ open System
 open System.Net
 open Microsoft.AspNetCore.Http
 
-type GeoblockingMiddleware(next: RequestDelegate) =
+type GeoblockingMiddleware(next: RequestDelegate, settings: GeoConfig) =
 
     /// GeoBlocking configuration that can be overriden
-    let mutable Config = Common.defaultConfig
+    let mutable Config = settings
+    do Common.setupCacheCleanup settings
+
+    let denyRequest (context: HttpContext) =
+        task {
+            context.Response.StatusCode <- int HttpStatusCode.Forbidden
+            do! context.Response.WriteAsync("Geo location not allowed")
+        }
+
+    let acceptRequest (next: RequestDelegate, context: HttpContext) = next.Invoke context
+
+    new(next) = GeoblockingMiddleware(next, Common.defaultConfig)
 
     member this.Invoke(context: HttpContext) =
-
-        let denyRequest (context: HttpContext) =
-            task {
-                context.Response.StatusCode <- int HttpStatusCode.Forbidden
-                do! context.Response.WriteAsync("Geo location not allowed")
-            }
-
-        let acceptRequest (next: RequestDelegate, context: HttpContext) = next.Invoke(context)
 
         task {
             let ipAddress = context.Request.HttpContext.Connection.RemoteIpAddress.ToString()
@@ -35,3 +38,5 @@ type GeoblockingMiddleware(next: RequestDelegate) =
             else
                 do! acceptRequest (next, context)
         }
+
+    member this.ReInitCacheCleaning() = Common.setupCacheCleanup Config

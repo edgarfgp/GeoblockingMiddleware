@@ -10,11 +10,10 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
-    - name: Check code formatting
-      run: |
-        dotnet tool restore
-        dotnet fantomas --check -r src
-
+#    - name: Check code formatting
+#      run: |
+#        dotnet tool restore
+#        dotnet fantomas --check -r src
   avalonia:
     name: GeoblockingMiddleware.sln
     runs-on: macos-12
