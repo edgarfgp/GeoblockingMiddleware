@@ -4,7 +4,7 @@ open System
 open System.Net
 open Microsoft.AspNetCore.Http
 
-type GeoblockingMiddleware(next: RequestDelegate, settings:GeoConfig) =
+type GeoblockingMiddleware(next: RequestDelegate, settings: GeoConfig) =
 
     /// GeoBlocking configuration that can be overriden
     let mutable Config = settings
@@ -39,6 +39,4 @@ type GeoblockingMiddleware(next: RequestDelegate, settings:GeoConfig) =
                 do! acceptRequest (next, context)
         }
 
-    member this.ReInitCacheCleaning() =
-        Common.setupCacheCleanup Config
-        
+    member this.ReInitCacheCleaning() = Common.setupCacheCleanup Config

@@ -26,20 +26,22 @@ type GeoPermission =
     | BlockedItems of Blacklist: string list
 
 type GeoConfig =
-    { /// Countries allowed or denied for the endpoint
-      Countries: GeoPermission
-      /// URL path for protected or denied endpoint.
-      ApiPaths: GeoPermission
-      /// Use a concurrent dictionary to cache the results
-      UseCache: bool
-      /// Clean up cache in X hours. Zero = don't clean up. If you setup this, then recommended value is DNS TTL, e.g.: 36.
-      CacheCleanUpHours: float
-      /// If not identified, should we let user in or not
-      BlockOnError: bool
-      /// Timeout after which we detect we couldn't identify the country
-      TimeoutMs: int
-      /// Used external service provider
-      Service: GeoService }
+    {
+        /// Countries allowed or denied for the endpoint
+        Countries: GeoPermission
+        /// URL path for protected or denied endpoint.
+        ApiPaths: GeoPermission
+        /// Use a concurrent dictionary to cache the results
+        UseCache: bool
+        /// Clean up cache in X hours. Zero = don't clean up. If you setup this, then recommended value is DNS TTL, e.g.: 36.
+        CacheCleanUpHours: float
+        /// If not identified, should we let user in or not
+        BlockOnError: bool
+        /// Timeout after which we detect we couldn't identify the country
+        TimeoutMs: int
+        /// Used external service provider
+        Service: GeoService
+    }
 
 module Common =
     let defaultConfig =
@@ -174,7 +176,8 @@ module Common =
                 return config.BlockOnError
         }
 
-    let mutable hasSetupCacellation : System.Threading.CancellationTokenSource option = None
+    let mutable hasSetupCacellation: System.Threading.CancellationTokenSource option =
+        None
 
     let setupCacheCleanup config =
         // Cancel previous cacheCleanup tasks from memory
@@ -187,21 +190,27 @@ module Common =
         // Setup a new task for cleaning the cache
         let newToken = new System.Threading.CancellationTokenSource()
         hasSetupCacellation <- Some newToken
+
         if (not config.UseCache) || config.CacheCleanUpHours <= 0 then
             ()
         else
-            let checkTime, validityTime = (1000. * 3600. * config.CacheCleanUpHours) |> int, config.CacheCleanUpHours
+            let checkTime, validityTime =
+                (1000. * 3600. * config.CacheCleanUpHours) |> int, config.CacheCleanUpHours
+
             Async.StartAsTask(
                 async {
                     // Sleep in the background, waiting for IRQ to wake up
-                    do! checkTime |> Async.Sleep 
+                    do! checkTime |> Async.Sleep
                     let cleanTime = DateTime.UtcNow.AddHours(-1. * validityTime)
                     // Make a copy, to not hit cache-modification during iteration
                     let cachedItems = lastIpAddressesCache |> Seq.toArray
-                    cachedItems 
-                    |> Array.filter(fun c -> c.Value.LastAccessTime < cleanTime)
-                    |> Array.iter(fun i ->
+
+                    cachedItems
+                    |> Array.filter (fun c -> c.Value.LastAccessTime < cleanTime)
+                    |> Array.iter (fun i ->
                         let _ = lastIpAddressesCache.TryRemove i.Key
-                        ()
-                    )
-                }, cancellationToken = newToken.Token) |> ignore
+                        ())
+                },
+                cancellationToken = newToken.Token
+            )
+            |> ignore

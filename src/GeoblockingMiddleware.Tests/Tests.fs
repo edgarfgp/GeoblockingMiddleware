@@ -14,23 +14,24 @@ module GeoTestClass =
     // Creates random IPv4 address
     let rndIp () =
         (".",
-            Array.unfold
-                (fun x ->
-                    if x < 4 then
-                        Some(rnd.Next(0, 255).ToString(), x + 1)
-                    else
-                        None)
-                0)
+         Array.unfold
+             (fun x ->
+                 if x < 4 then
+                     Some(rnd.Next(0, 255).ToString(), x + 1)
+                 else
+                     None)
+             0)
         |> String.Join
+
     [<Fact>]
     let ``Should be blocked: ApiPaths hit blocked`` () =
         task {
             let config =
                 { GeoblockingMiddleware.Common.defaultConfig with
-                  //Example:
-                      Countries = AllowedItems [ "XX" ]
-                      ApiPaths = BlockedItems [ "/mypath"; "/test2" ]
-                      Service = Disabled }
+                    //Example:
+                    Countries = AllowedItems [ "XX" ]
+                    ApiPaths = BlockedItems [ "/mypath"; "/test2" ]
+                    Service = Disabled }
 
             let! actualResult = Common.shouldBlock config "0.0.0.1" "http://myserver/mypath/thing.aspx"
             actualResult |> shouldEqual true
@@ -199,13 +200,13 @@ module GeoTestClass =
         task {
             let config =
                 { Common.defaultConfig with
-                      Countries = AllowedItems [ "XX" ]
-                      ApiPaths = BlockedItems [ "/mypath" ]
-                      UseCache = true
-                      // Cache 0.5 seconds, just for a test
-                      // Typically you would like something like DNS TTL: 36.
-                      CacheCleanUpHours = (0.5 / 3600.) 
-                      Service = Disabled }
+                    Countries = AllowedItems [ "XX" ]
+                    ApiPaths = BlockedItems [ "/mypath" ]
+                    UseCache = true
+                    // Cache 0.5 seconds, just for a test
+                    // Typically you would like something like DNS TTL: 36.
+                    CacheCleanUpHours = (0.5 / 3600.)
+                    Service = Disabled }
 
             Common.setupCacheCleanup config
             let theIP = rndIp ()
@@ -216,10 +217,16 @@ module GeoTestClass =
             // Dump random IPs to cache for 2 secs, to have some parallel action with cleanup:
             let testTimeMs = 2000
             let c = new System.Threading.CancellationTokenSource(testTimeMs)
+
             Async.StartAsTask(
                 task {
                     let! _ = Common.shouldBlock config (rndIp ()) "http://myserver/mypath/thing2.aspx"
-                    () } |> Async.AwaitTask, cancellationToken = c.Token) |> ignore
+                    ()
+                }
+                |> Async.AwaitTask,
+                cancellationToken = c.Token
+            )
+            |> ignore
 
             do! Task.Delay testTimeMs
 
@@ -227,19 +234,18 @@ module GeoTestClass =
             let cachedIp = Common.lastIpAddressesCache.ContainsKey theIP
             cachedIp |> shouldEqual false
 
-            for _ in [1..10] do
+            for _ in [ 1..10 ] do
                 // We shouldn't call this multiple times, but if we accidentally do, it shouldn't crash either:
                 // It cancels the background work set previously.
-                let newConfig = { config with CacheCleanUpHours = (rnd.NextDouble() * 0.5 /3600.) }
+                let newConfig = { config with CacheCleanUpHours = (rnd.NextDouble() * 0.5 / 3600.) }
                 Common.setupCacheCleanup config
                 let! _ = Common.shouldBlock config (rndIp ()) "http://myserver/mypath/thing3.aspx"
                 ()
-            
+
             do! Task.Delay 2000
 
             // By now, the cache should be clean
             Assert.Equal(0, Common.lastIpAddressesCache.Count)
-            
+
         }
         :> Task
-
