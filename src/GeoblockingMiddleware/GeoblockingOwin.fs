@@ -5,11 +5,12 @@ open System.Net
 open Microsoft.Owin
 open FSharp.Control.TaskBuilder
 
-type GeoblockingMiddleware(next: OwinMiddleware) =
+type GeoblockingMiddleware(next: OwinMiddleware, settings:GeoConfig) =
     inherit OwinMiddleware(next)
 
     /// GeoBlocking configuration that can be overriden
-    let mutable Config = Common.defaultConfig
+    let mutable Config = settings
+    do Common.setupCacheCleanup settings
 
     let denyRequest (context: IOwinContext) =
         task {
@@ -17,8 +18,10 @@ type GeoblockingMiddleware(next: OwinMiddleware) =
             do! context.Response.WriteAsync("Geo location not allowed")
         }
 
-    let acceptRequest (next: OwinMiddleware, context: IOwinContext) = next.Invoke(context)
+    let acceptRequest (next: OwinMiddleware, context: IOwinContext) = next.Invoke context
     
+    new(next) = GeoblockingMiddleware(next, Common.defaultConfig)
+
     override this.Invoke(context: IOwinContext) =
 
         task {
@@ -33,9 +36,8 @@ type GeoblockingMiddleware(next: OwinMiddleware) =
                 do! acceptRequest (next, context)
         }
 
-    member this.InitCacheCleaning() =
+    member this.ReInitCacheCleaning() =
         Common.setupCacheCleanup Config
-
 
 open System.Runtime.CompilerServices
 open Owin
