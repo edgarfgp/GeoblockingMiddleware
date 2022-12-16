@@ -220,6 +220,7 @@ module GeoTestClass =
 
             Async.StartAsTask(
                 task {
+                    do! Task.Delay 100
                     let! _ = Common.shouldBlock config (rndIp ()) "http://myserver/mypath/thing2.aspx"
                     ()
                 }
