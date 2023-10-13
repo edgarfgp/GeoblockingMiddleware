@@ -17,6 +17,7 @@ type GeoService =
     /// Disable using geoblocking for now, return
     | Disabled
 
+[<Struct>]
 type GeoblockStatus =
     { IsBlocked: bool
       LastAccessTime: DateTime }
