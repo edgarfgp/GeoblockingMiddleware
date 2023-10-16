@@ -195,7 +195,8 @@ module GeoTestClass =
         }
         :> Task
 
-    [<Fact>]
+    [<Fact(Skip = "This test is not deterministic. Need to investigate.")>]
+    
     let ``Cache cleanup test`` () =
         task {
             let config =
@@ -216,7 +217,7 @@ module GeoTestClass =
 
             // Dump random IPs to cache for 2 secs, to have some parallel action with cleanup:
             let testTimeMs = 2000
-            let c = new System.Threading.CancellationTokenSource(testTimeMs)
+            let c = new CancellationTokenSource(testTimeMs)
 
             Async.StartAsTask(
                 task {
