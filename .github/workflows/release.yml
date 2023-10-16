@@ -9,7 +9,7 @@ permissions: write-all
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: nuget
+    environment: GeoblockingMiddleware
     env:
       SLN_FILE: GeoblockingMiddleware.sln
     steps:
@@ -52,4 +52,4 @@ jobs:
         path: nupkgs/
     - name: Push
       run: |
-        dotnet nuget push "nupkgs/*.nupkg" -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_TOKEN }} --skip-duplicate
+        dotnet nuget push "nupkgs/*.nupkg" -s https://api.nuget.org/v3/index.json -k ${{ secrets.GEOBLOCKINGMIDDLEWARE_NUGET_TOKEN }} --skip-duplicate
