@@ -1,26 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
+    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
+    <IsPackable>true</IsPackable>
     <OutputType>Library</OutputType>
-    <PackageId>GeoblockingMiddleware</PackageId>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+  <!-- NuGet Package -->
+  <PropertyGroup>
+    <Authors>Edgar, Timothé, Tuomas</Authors>
+    <Description>This component will act as middleware for OWIN or AspNetCore pipeline and check the request geolocation if the request comes from allowed country or not.</Description>
     <RepositoryUrl>https://github.com/edgarfgp/GeoblockingMiddleware</RepositoryUrl>
     <PackageTags>owin, geoblocking, location, country, countrycode, geoblock, stop, geographical, block by country, aspnetcore, webserver, kestrel, request, ip, middleware, pipeline, dotnet</PackageTags>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-	<Version>1.0.0</Version>
-	<Authors>Edgar, Timothé, Tuomas</Authors>
 	<OutputPath>..\bin\</OutputPath>
     <RepositoryType>git</RepositoryType>
-    <TargetFrameworks>net472;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <IsPackable>true</IsPackable>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <IsTestProject>false</IsTestProject>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <Description>
-        This component will act as middleware for OWIN or AspNetCore pipeline and check the request geolocation if the request comes from allowed country or not.
-    </Description>
   </PropertyGroup>
+
+  <!-- SourceLink -->
+  <PropertyGroup>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(GITHUB_ACTIONS) == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+  
   <PropertyGroup>
     <DefineConstants Condition=" '$(TargetFramework)' != 'net472' ">ASPNETCORE</DefineConstants>
   </PropertyGroup>
