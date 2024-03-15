@@ -4,6 +4,7 @@ open System
 open System.Net.Http
 open Newtonsoft.Json
 open System.Collections.Concurrent
+open Microsoft.Extensions.DependencyInjection
 
 type IpApiModel = { status: string; countryCode: string }
 
@@ -55,13 +56,16 @@ module Common =
           TimeoutMs = 5000
           Service = Ip_Api }
 
+    let services = new ServiceCollection()
+    let httpClientFactory = services.AddHttpClient().BuildServiceProvider().GetService<IHttpClientFactory>()
+
     /// Keep in memory a list of the latest ip addresses with their blocking status.
     /// This is public so it can be cleaned with scheduled task outside of this library.
     let lastIpAddressesCache = ConcurrentDictionary<string, GeoblockStatus>()
 
     let serviceCallIpApi (ipAddress: string) timeout =
         task {
-            use httpClient = new HttpClient(Timeout = TimeSpan.FromMilliseconds timeout)
+            let httpClient = httpClientFactory.CreateClient(Timeout = TimeSpan.FromMilliseconds timeout)
 
             let! json = httpClient.GetStringAsync($"http://ip-api.com/json/{ipAddress}?fields=status,countryCode")
 
@@ -76,7 +80,7 @@ module Common =
 
     let serviceCallIpInfo (token: string) (ipAddress: string) timeout =
         task {
-            use httpClient = new HttpClient(Timeout = TimeSpan.FromMilliseconds timeout)
+            let httpClient = httpClientFactory.CreateClient(Timeout = TimeSpan.FromMilliseconds timeout)
 
             httpClient.DefaultRequestHeaders.Accept.Add(
                 System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json")
