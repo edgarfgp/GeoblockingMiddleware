@@ -251,3 +251,14 @@ module GeoTestClass =
 
         }
         :> Task
+
+
+    [<Fact(Skip = "this does actual http-call")>]
+    let ``Should be calling IpApi`` () =
+        task {
+            let! res = GeoblockingMiddleware.Common.serviceCallIpApi "157.24.0.105" 3000
+            match res with
+            | None -> failwith "Country not gotten"
+            | Some c -> 
+                String.IsNullOrEmpty c |> shouldEqual false
+        }

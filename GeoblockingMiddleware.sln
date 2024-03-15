@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GeoblockingMiddleware", "src\GeoblockingMiddleware\GeoblockingMiddleware.fsproj", "{0AC1014E-B6C5-4B5B-A1BF-68CC0889EC71}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "GeoblockingMiddleware", "src\GeoblockingMiddleware\GeoblockingMiddleware.fsproj", "{0AC1014E-B6C5-4B5B-A1BF-68CC0889EC71}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "GeoblockingMiddleware.Tests", "src\GeoblockingMiddleware.Tests\GeoblockingMiddleware.Tests.fsproj", "{BAF74CB6-8536-4727-83D0-0DBC5ACD6097}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "GeoblockingMiddleware.Tests", "src\GeoblockingMiddleware.Tests\GeoblockingMiddleware.Tests.fsproj", "{BAF74CB6-8536-4727-83D0-0DBC5ACD6097}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "GeoblockingMiddlewareFrameworkTest", "src\GeoblockingMiddleware.FrameworkTest\GeoblockingMiddlewareFrameworkTest.fsproj", "{67B5747B-200D-4E57-8E46-9810C3607077}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{BAF74CB6-8536-4727-83D0-0DBC5ACD6097}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAF74CB6-8536-4727-83D0-0DBC5ACD6097}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAF74CB6-8536-4727-83D0-0DBC5ACD6097}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67B5747B-200D-4E57-8E46-9810C3607077}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67B5747B-200D-4E57-8E46-9810C3607077}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67B5747B-200D-4E57-8E46-9810C3607077}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67B5747B-200D-4E57-8E46-9810C3607077}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
