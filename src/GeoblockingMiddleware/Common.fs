@@ -11,7 +11,7 @@ type IpApiModel = { status: string; countryCode: string }
 /// Supported services
 /// Todo: Add more.
 type GeoService =
-    /// http://ip-api.com/
+    /// https://ip-api.com/
     | Ip_Api
     /// https://ipinfo.io/
     | IpInfo of Token: String
@@ -67,7 +67,7 @@ module Common =
         task {
             let httpClient = httpClientFactory.CreateClient(Timeout = TimeSpan.FromMilliseconds timeout)
 
-            let! json = httpClient.GetStringAsync($"http://ip-api.com/json/{ipAddress}?fields=status,countryCode")
+            let! json = httpClient.GetStringAsync($"https://ip-api.com/json/{ipAddress}?fields=status,countryCode")
 
             let response = JsonConvert.DeserializeObject<IpApiModel>(json)
 
